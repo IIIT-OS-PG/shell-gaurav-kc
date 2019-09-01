@@ -37,10 +37,22 @@ char** parseString(string input)
     while(input[i]!='\0')
     {
         count=0;
-        while(input[i]!=' ' && input[i]!='\0')
+        if(input[i]=='"')
         {
-            count++;
             i++;
+            j=i;
+            while(input[i]!='"')
+            {
+                count++;
+                i++;
+            }
+            i++;
+        }else{
+            while(input[i]!=' ' && input[i]!='\0')
+            {
+                count++;
+                i++;
+            }
         }
         while((input[i]==' ') && input[i]!='\0')
         {
@@ -48,7 +60,7 @@ char** parseString(string input)
         }
         char *a = new char[count];
         k=0;
-        while((input[j]!=' ') && input[j]!='\0')
+        while(count-- && input[j]!='\0')
         {
             a[k] = input[j];
             k++;
@@ -58,7 +70,7 @@ char** parseString(string input)
         args[argcount] = a;
         argcount++;
     }
-    cout<<args[0]<<" .. "<<args[1]<<endl;
+    cout<<args[0]<<" "<<args[1];
     args[argcount]=NULL;
     return args;
 }
@@ -91,4 +103,9 @@ int main()
         if(WIFEXITED(status))
             cout<<"Child successfully terminated"<<endl;
     }
+    /*string command;
+    getline(cin,command);
+    char** args;
+    args = parseString(command);
+    cout<<args[0]<<" "<<args[1];*/
 }
