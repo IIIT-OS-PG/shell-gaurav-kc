@@ -70,12 +70,11 @@ char** parseString(string input)
         args[argcount] = a;
         argcount++;
     }
-    cout<<args[0]<<" "<<args[1];
     args[argcount]=NULL;
     return args;
 }
 
-int main()
+int executecommand(char** args)
 {
     pid_t childid = fork();
     if(childid < 0)
@@ -87,12 +86,38 @@ int main()
     if(childid == 0)
     {
         //I'm in child process
+        execv(args[0],args);
+    }
+    if(childid > 0)
+    {
+        //I'm in parent process
+        // cout<<"In parent"<<endl;
+        int status;
+        wait(&status);
+    }
+}
+
+int loop()
+{
+    /*pid_t childid = fork();
+    if(childid < 0)
+    {
+        //error occured. Print msg and exit
+        cout<<"Error forking"<<endl;
+        return -1;
+    }
+    if(childid == 0)
+    {
+        //I'm in child process
         char **args;
         string command;
-        cout<<"Enter command"<<endl;
-        getline(cin,command);
-        args = parseString(command);
-        execv(args[0],args);
+        do
+        {
+            cout<<"Enter command"<<endl;
+            getline(cin,command);
+            args = parseString(command);
+            execv(args[0],args);
+        }while(1);
     }
     if(childid > 0)
     {
@@ -100,12 +125,27 @@ int main()
         cout<<"In parent"<<endl;
         int status;
         wait(&status);
-        if(WIFEXITED(status))
-            cout<<"Child successfully terminated"<<endl;
-    }
+        cout<<status;
+    }*/
+    int status;
+    string command;
+    char** args;
+    string ps1string = "> ";
+    do{
+        cout<<ps1string;
+        getline(cin,command);
+        args=parseString(command);
+        status=executecommand(args);
+    }while(status);
+}
+
+int main()
+{
+    loop();
     /*string command;
     getline(cin,command);
     char** args;
     args = parseString(command);
     cout<<args[0]<<" "<<args[1];*/
+    return 0;
 }
