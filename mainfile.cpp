@@ -1,8 +1,18 @@
 #include<iostream>
 #include<unistd.h>
 #include<sys/wait.h>
+#include<string.h>
 #define ARGLIMIT 10
 using namespace std;
+
+int checkinbuilt(string command)
+{
+    if(command == "cd")
+        return 1;
+    if(command == "exit")
+        return 2;
+    return 0;
+}
 
 char** parseString(string input)
 {
@@ -76,24 +86,47 @@ char** parseString(string input)
 
 int executecommand(char** args)
 {
-    pid_t childid = fork();
-    if(childid < 0)
+    int isinbuilt = checkinbuilt(args[0]+5);
+    switch(isinbuilt)
     {
-        //error occured. Print msg and exit
-        cout<<"Error forking"<<endl;
-        return -1;
-    }
-    if(childid == 0)
-    {
-        //I'm in child process
-        execv(args[0],args);
-    }
-    if(childid > 0)
-    {
-        //I'm in parent process
-        // cout<<"In parent"<<endl;
-        int status;
-        wait(&status);
+        case 0:
+        {
+            pid_t childid = fork();
+            if(childid < 0)
+            {
+                //error occured. Print msg and exit
+                cout<<"Error forking"<<endl;
+                return -1;
+            }
+            if(childid == 0)
+            {
+                //I'm in child process
+                execv(args[0],args);
+            }
+            if(childid > 0)
+            {
+                //I'm in parent process
+                // cout<<"In parent"<<endl;
+                int status;
+                wait(&status);
+            }
+            return 1;
+        }
+
+        case 1 :
+        {
+            if(!strcmp(args[1],"~"))
+            {
+                args[1] = getenv("HOME");
+            }
+            chdir(args[1]);
+            return 1;
+        }
+        case 2 :
+        {
+            cout<<"Bye"<<endl;
+            exit(0);
+        }
     }
 }
 
@@ -135,6 +168,7 @@ int loop()
         cout<<ps1string;
         getline(cin,command);
         args=parseString(command);
+        //args = parseInput();
         status=executecommand(args);
     }while(status);
 }
