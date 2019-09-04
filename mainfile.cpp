@@ -13,11 +13,45 @@ int checkinbuilt(string command)
         return 2;
     return 0;
 }
-
-char** parseString(string input)
+int checkToken(string command)
 {
-    int i=0,j,count,k,argcount=0;
-    char **args = new char*[ARGLIMIT]();
+    if(command == "|")
+        return 1;
+    if(command == ">")
+        return 2;
+    if(command == ">>")
+        return 3;
+    return 0;
+}
+
+char* getToken(string input,int i,int* ptr)
+{
+    int count=0;
+    int k=0;
+    int j=i;
+    while(input[i]!=' ' && input[i]!= '\0')
+    {
+        count++;
+        i++;
+    }
+    char* a = new char[count];
+    while(count-- && input[j]!='\0')    //creating token
+    {
+        a[k] = input[j];
+        k++;
+        j++;
+    }
+    while(input[i]==' ' && input[i]!='\0')
+    {
+        i++;
+    }
+    *ptr = i;
+    return a;
+}
+
+char* getCommand(string input, int i,int* ptr)
+{
+    int count=0;
     while(input[i]!='\0' && input[i]!=' ')
     {
         count++;
@@ -25,7 +59,7 @@ char** parseString(string input)
     }
     i=0;
     char *a = new char[count+5];
-    k=5;
+    int k=5;
     a[0] = '/';
     a[1] = 'b';
     a[2] = 'i';
@@ -41,43 +75,57 @@ char** parseString(string input)
     {
         i++;
     }
-    args[argcount] = a;
+    *ptr = i;
+    return a;
+}
+
+char* getStringToken(string input,int i,int* ptr)
+{
+    i++;
+    int j=i;
+    int count=0;
+    while(input[i]!='"')    //scan for the next " and blindly create a token
+    {
+        count++;
+        i++;
+    }
+    char *a = new char[count];
+    int k=0;
+    while(j!=i)
+    {
+        a[k]=input[j];
+        k++;
+        j++;
+    }
+    i++;
+    while((input[i]==' ') && input[i]!='\0')    //ignore white spaces
+    {
+        i++;
+    }
+    *ptr = i;
+    return a;
+}
+
+char** parseString(string input)
+{
+    int i=0,j,count,k,argcount=0;
+    char **args = new char*[ARGLIMIT]();
+    char* command = getCommand(input,i,&i);
+    char* token;
+    args[argcount] = command;
     argcount++;
     j=i;
-    while(input[i]!='\0')
+    while(input[i]!='\0')           //main loop to scan the string
     {
         count=0;
         if(input[i]=='"')
         {
-            i++;
-            j=i;
-            while(input[i]!='"')
-            {
-                count++;
-                i++;
-            }
-            i++;
-        }else{
-            while(input[i]!=' ' && input[i]!='\0')
-            {
-                count++;
-                i++;
-            }
+            token = getStringToken(input,i,&i);
         }
-        while((input[i]==' ') && input[i]!='\0')
-        {
-            i++;
+        else{
+            token = getToken(input,i,&i);
         }
-        char *a = new char[count];
-        k=0;
-        while(count-- && input[j]!='\0')
-        {
-            a[k] = input[j];
-            k++;
-            j++;
-        }
-        j=i;
-        args[argcount] = a;
+        args[argcount] = token;
         argcount++;
     }
     args[argcount]=NULL;
@@ -89,7 +137,7 @@ int executecommand(char** args)
     int isinbuilt = checkinbuilt(args[0]+5);
     switch(isinbuilt)
     {
-        case 0:
+        case 0:     //linux command
         {
             pid_t childid = fork();
             if(childid < 0)
@@ -113,7 +161,7 @@ int executecommand(char** args)
             return 1;
         }
 
-        case 1 :
+        case 1 :    //cd
         {
             if(!strcmp(args[1],"~"))
             {
@@ -122,7 +170,7 @@ int executecommand(char** args)
             chdir(args[1]);
             return 1;
         }
-        case 2 :
+        case 2 :    //exit
         {
             cout<<"Bye"<<endl;
             exit(0);
