@@ -4,6 +4,7 @@
 #include<string.h>
 #include<errno.h>
 #include<vector>
+#include<fcntl.h>
 #include "parser.h"
 #define ARGLIMIT 10
 using namespace std;
@@ -29,17 +30,60 @@ int checkToken(string command)
         return 3;
     return 0;
 }
-void handleredirection(string input)
+void handleredirection(string input,int index)
 {
-    
+    char **args = parseString(input,0,index);
+    int k=0;
+    // while(args[k]!=NULL)
+    // {
+    //     cout<<args[k]<<" ";
+    //     k++;
+    // }
+    index = index+2;
+    char *filename = getToken(input,&index,input.size());
+    int fd_filew = open(filename, O_CREAT| O_WRONLY | O_TRUNC, 0700);
+    pid_t child = fork();
+    if(child == 0)
+    {
+        dup2(fd_filew,1);
+        executecommandwithoutfork(args);
+    }
+    else{
+        while(wait(NULL)>0);
+    }
 }
+
+void handleappend(string input,int index)
+{
+    char **args = parseString(input,0,index);
+    int k=0;
+    // while(args[k]!=NULL)
+    // {
+    //     cout<<args[k]<<" ";
+    //     k++;
+    // }
+    index = index+3;
+    char *filename = getToken(input,&index,input.size());
+    int fd_filew = open(filename, O_APPEND | O_WRONLY);
+    pid_t child = fork();
+    if(child == 0)
+    {
+        dup2(fd_filew,1);
+        executecommandwithoutfork(args);
+    }
+    else{
+        while(wait(NULL)>0);
+    }
+}
+
 
 void handlepipe(string input)
 {
     vector<int> indices;
     int count=0;
     int lim1,lim2;
-    int j=0;
+    int j=0;            cout<<"hihihhi";
+
     int l;
     int i=0;
     int m=0;
@@ -168,17 +212,23 @@ char** parseString(string input,int lim1,int lim2)
     int i=lim1,argcount=0;
     char **args = new char*[ARGLIMIT]();
     char* token;
-    for(int i=0;i<input.size();i++)
+    for(int i=lim1;i<lim2;i++)
     {
         if(input[i]=='|')
         {
             handlepipe(input);
             return NULL;
         }
-        if(input[i]=='<')
+        if(input[i]=='>')
         {
-            handleredirection(input);
+            if(input[i+1]=='>')
+            {
+                handleappend(input,i);
+                return NULL;
+            }else{
+            handleredirection(input,i);
             return NULL;
+        }
         }
     }
     char* command = getCommand(input,&i,lim2);
