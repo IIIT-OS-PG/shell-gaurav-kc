@@ -18,27 +18,14 @@ int checkinbuilt(string command)
         return 1;
     if(command == "exit")
         return 2;
+    //handle custom command in executecommand and executecommandwithoutfork functions
     return 0;
 }
-int checkToken(string command)
-{
-    if(command == "|")
-        return 1;
-    if(command == ">")
-        return 2;
-    if(command == ">>")
-        return 3;
-    return 0;
-}
+
 void handleredirection(string input,int index)
 {
     char **args = parseString(input,0,index);
     int k=0;
-    // while(args[k]!=NULL)
-    // {
-    //     cout<<args[k]<<" ";
-    //     k++;
-    // }
     index = index+2;
     char *filename = getToken(input,&index,input.size());
     int fd_filew = open(filename, O_CREAT| O_WRONLY | O_TRUNC, 0700);
@@ -57,11 +44,6 @@ void handleappend(string input,int index)
 {
     char **args = parseString(input,0,index);
     int k=0;
-    // while(args[k]!=NULL)
-    // {
-    //     cout<<args[k]<<" ";
-    //     k++;
-    // }
     index = index+3;
     char *filename = getToken(input,&index,input.size());
     int fd_filew = open(filename, O_APPEND | O_WRONLY);
@@ -82,8 +64,7 @@ void handlepipe(string input)
     vector<int> indices;
     int count=0;
     int lim1,lim2;
-    int j=0;            cout<<"hihihhi";
-
+    int j=0;
     int l;
     int i=0;
     int m=0;
@@ -103,7 +84,6 @@ void handlepipe(string input)
                 temp[l] = input[k];
                 l++;
             }
-            //cout<<temp<<endl;
             token[m]=temp;
             m++;
             tempcount=0;
@@ -120,7 +100,6 @@ void handlepipe(string input)
         l++;
     }
     token[m]=temp;
-    //cout<<temp<<endl;
     m++;
     token[m]=NULL;
     //now count has the number of pipes present in the string.
@@ -209,6 +188,7 @@ void handlepipe(string input)
 
 char** parseString(string input,int lim1,int lim2)
 {
+    //as an abstract, the function can tokenize between specified limits
     int i=lim1,argcount=0;
     char **args = new char*[ARGLIMIT]();
     char* token;
@@ -228,9 +208,11 @@ char** parseString(string input,int lim1,int lim2)
             }else{
             handleredirection(input,i);
             return NULL;
+            }
         }
-        }
+        //if you wish to handle another operator seperately, add it here
     }
+    //I assume first token is always a command
     char* command = getCommand(input,&i,lim2);
     args[argcount] = command;
     argcount++;
@@ -238,6 +220,9 @@ char** parseString(string input,int lim1,int lim2)
     {
         switch(input[i])
         {
+            //rest cases are covered here.
+            //it can be string or option.
+            //other cases can be added here
             case '"' :
             {
                 token = getStringToken(input,&i,lim2);
@@ -259,7 +244,7 @@ char** parseString(string input,int lim1,int lim2)
 int executecommand(char** args)
 {
     int isinbuilt = checkinbuilt(args[0]+5);
-    /*
+    /* use this code to see what arguments are received
     cout<<"Args .. ";
     int i=0;
     while(args[i]!=NULL)
@@ -291,7 +276,6 @@ int executecommand(char** args)
             if(childid > 0)
             {
                 //I'm in parent process
-                // cout<<"In parent"<<endl;
                 int status=0;
                 wait(&status);
                 return 1;
@@ -318,8 +302,11 @@ int executecommand(char** args)
 
 int executecommandwithoutfork(char** args)
 {
+    //this function executes a command without forking.
+    // I use this function instead of execv directly to handle errors or
+    //call builtin functions
     int isinbuilt = checkinbuilt(args[0]+5);
-    /*
+    /* use this code to see what arguments are received
     cout<<"Args .. ";
     int i=0;
     while(args[i]!=NULL)
