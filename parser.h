@@ -1,12 +1,12 @@
 using namespace std;
 
-char* getToken(string input,int* ptr)
+char* getToken(string input,int* ptr,int lim2)
 {
     int count=0;
     int k=0;
     int i=*ptr;
     int j=i;
-    while(input[i]!=' ' && input[i]!= '\0')
+    while(input[i]!=' ' && input[i]!= '\0' && i<lim2)
     {
         count++;
         i++;
@@ -18,7 +18,7 @@ char* getToken(string input,int* ptr)
         k++;
         j++;
     }
-    while(input[i]==' ' && input[i]!='\0')
+    while(input[i]==' ' && input[i]!='\0' && i<lim2)
     {
         i++;
     }
@@ -27,16 +27,16 @@ char* getToken(string input,int* ptr)
     return a;
 }
 
-char* getCommand(string input,int* ptr)
+char* getCommand(string input,int* ptr, int lim2)
 {
     int i=*ptr;
     int count=0;
-    while(input[i]!='\0' && input[i]!=' ')
+    while(input[i]!='\0' && input[i]!=' ' && i<lim2)
     {
         count++;
         i++;
     }
-    i=0;
+    i=*ptr;
     char *a = new char[count+5];
     int k=5;
     a[0] = '/';
@@ -44,13 +44,13 @@ char* getCommand(string input,int* ptr)
     a[2] = 'i';
     a[3] = 'n';
     a[4] = '/';
-    while(input[i]!='\0' && input[i]!=' ')
+    while(input[i]!='\0' && input[i]!=' ' && i<lim2)
     {
         a[k] = input[i];
         i++;
         k++;
     }
-    while((input[i]==' ') && input[i]!='\0')
+    while((input[i]==' ') && input[i]!='\0' && i<lim2)
     {
         i++;
     }
@@ -59,13 +59,13 @@ char* getCommand(string input,int* ptr)
     return a;
 }
 
-char* getStringToken(string input,int* ptr)
+char* getStringToken(string input,int* ptr, int lim2)
 {
     int i=*ptr;
     i++;
     int j=i;
     int count=0;
-    while(input[i]!='"')    //scan for the next " and blindly create a token
+    while(input[i]!='"' && i<lim2)    //scan for the next " and blindly create a token
     {
         count++;
         i++;
@@ -79,7 +79,7 @@ char* getStringToken(string input,int* ptr)
         j++;
     }
     i++;
-    while((input[i]==' ') && input[i]!='\0')    //ignore white spaces
+    while((input[i]==' ') && input[i]!='\0' && i<lim2)    //ignore white spaces
     {
         i++;
     }
