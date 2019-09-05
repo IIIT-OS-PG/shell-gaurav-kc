@@ -9,6 +9,7 @@
 using namespace std;
 char** parseString(string input,int lim1,int lim2);
 int executecommand(char** args);
+int executecommandwithoutfork(char** args);
 
 int checkinbuilt(string command)
 {
@@ -28,7 +29,10 @@ int checkToken(string command)
         return 3;
     return 0;
 }
-
+void handleredirection(string input)
+{
+    
+}
 
 void handlepipe(string input)
 {
@@ -145,7 +149,8 @@ void handlepipe(string input)
                 close(fdarray[j][0]);
                 close(fdarray[j][1]);
             }
-            execv(args[0],args);
+            //execv(args[0],args);
+            executecommandwithoutfork(args);
         }       //the child process ends here
         //cout<<"\n"<<token[i]<<"  "<<indices[i]<<endl;
     }
@@ -163,6 +168,19 @@ char** parseString(string input,int lim1,int lim2)
     int i=lim1,argcount=0;
     char **args = new char*[ARGLIMIT]();
     char* token;
+    for(int i=0;i<input.size();i++)
+    {
+        if(input[i]=='|')
+        {
+            handlepipe(input);
+            return NULL;
+        }
+        if(input[i]=='<')
+        {
+            handleredirection(input);
+            return NULL;
+        }
+    }
     char* command = getCommand(input,&i,lim2);
     args[argcount] = command;
     argcount++;
@@ -175,24 +193,12 @@ char** parseString(string input,int lim1,int lim2)
                 token = getStringToken(input,&i,lim2);
             }
             break;
-            case '<' :
-            {
-                if(input[i+1] == '<')
-                {
-                    //handle <<
-                }else{
-                    //handle <
-                }
-                exit(0);
-            }
-            break;
             default :
             {
                 token = getToken(input,&i,lim2);
             }
             break;
         }
-
         args[argcount] = token;
         argcount++;
     }
@@ -203,13 +209,14 @@ char** parseString(string input,int lim1,int lim2)
 int executecommand(char** args)
 {
     int isinbuilt = checkinbuilt(args[0]+5);
-    cout<<"\n Args";
+    /*
+    cout<<"Args .. ";
     int i=0;
     while(args[i]!=NULL)
     {
         cout<<".. "<<args[i]<<endl;
         i++;
-    }
+    }*/
     switch(isinbuilt)
     {
         case 0:     //linux command
@@ -259,40 +266,28 @@ int executecommand(char** args)
     }
 }
 
-int executecommandwithfd(char** args,int **fdarray)
+int executecommandwithoutfork(char** args)
 {
     int isinbuilt = checkinbuilt(args[0]+5);
+    /*
+    cout<<"Args .. ";
+    int i=0;
+    while(args[i]!=NULL)
+    {
+        cout<<".. "<<args[i]<<endl;
+        i++;
+    }*/
     switch(isinbuilt)
     {
         case 0:     //linux command
         {
-            pid_t childid = fork();
-            if(childid < 0)
+            int status = execv(args[0],args);
+            if(status)
             {
-                //error occured. Print msg and exit
-                cout<<"Error forking"<<endl;
-                return -1;
+                cout<<strerror(errno)<<endl;
+                exit(-1);
             }
-            if(childid == 0)
-            {
-                //I'm in child process
-                int status = execv(args[0],args);
-                if(status)
-                {
-                    cout<<strerror(errno)<<endl;
-                    exit(-1);
-                }
-            }
-            if(childid > 0)
-            {
-                //I'm in parent process
-                // cout<<"In parent"<<endl;
-                int status=0;
-                wait(&status);
-            }
-            return 1;
         }
-
         case 1 :    //cd
         {
             if((args[1]!=NULL) && (!strcmp(args[1],"~")))
@@ -310,7 +305,6 @@ int executecommandwithfd(char** args,int **fdarray)
     }
 }
 
-
 int loop()
 {
     int status;
@@ -320,10 +314,9 @@ int loop()
     do{
         cout<<ps1string;
         getline(cin,command);
-        handlepipe(command);
-        //args=parseString(command,0,command.size());
-        //if(args!=NULL)
-        //    status=executecommand(args);
+        args=parseString(command,0,command.size());
+        if(args!=NULL)
+            status=executecommand(args);
     }while(1);
 }
 
