@@ -1,10 +1,10 @@
-dasd
-$?
-ls
-$
 ls
 $?
 ls
 sdasd
 $?
+exit
+ls
+ls -al
+ls -al | grep stat 
 exit

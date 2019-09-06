@@ -1,5 +1,64 @@
 using namespace std;
 
+
+
+char** parseString(string input,int lim1,int lim2)
+{
+    //as an abstract, the function can tokenize between specified limits
+    int i=lim1,argcount=0;
+    char **args = new char*[ARGLIMIT]();
+    char* token;
+    for(int i=lim1;i<lim2;i++)
+    {
+        if(input[i]=='|')
+        {
+            handlepipe(input);
+            return NULL;
+        }
+        if(input[i]=='>')
+        {
+            if(input[i+1]=='>')
+            {
+                handleappend(input,i);
+                return NULL;
+            }else{
+            handleredirection(input,i);
+            return NULL;
+            }
+        }
+        //if you wish to handle another operator seperately, add it here
+    }
+    //I assume first token is always a command
+    char* command = getCommand(input,&i,lim2);
+    args[argcount] = command;
+    argcount++;
+    while((i<lim2) && (input[i]!='\0'))
+    {
+        switch(input[i])
+        {
+            //rest cases are covered here.
+            //it can be string or option.
+            //other cases can be added here
+            case '"' :
+            {
+                token = getStringToken(input,&i,lim2);
+            }
+            break;
+            default :
+            {
+                token = getToken(input,&i,lim2);
+            }
+            break;
+        }
+        args[argcount] = token;
+        argcount++;
+    }
+    args[argcount]=NULL;
+    return args;
+}
+
+
+
 char* getToken(string input,int* ptr,int lim2)
 {
     int count=0;
