@@ -11,13 +11,14 @@ char* getToken(string input,int* ptr,int lim2)
         count++;
         i++;
     }
-    char* a = new char[count];
+    char* a = new char[count+1];
     while(count-- && input[j]!='\0')    //creating token
     {
         a[k] = input[j];
         k++;
         j++;
     }
+    a[k]='\0';
     while(input[i]==' ' && input[i]!='\0' && i<lim2)
     {
         i++;
@@ -37,7 +38,7 @@ char* getCommand(string input,int* ptr, int lim2)
         i++;
     }
     i=*ptr;
-    char *a = new char[count+5];
+    char *a = new char[count+6];
     int k=5;
     a[0] = '/';
     a[1] = 'b';
@@ -50,6 +51,7 @@ char* getCommand(string input,int* ptr, int lim2)
         i++;
         k++;
     }
+    a[k]= '\0';
     while((input[i]==' ') && input[i]!='\0' && i<lim2)
     {
         i++;
@@ -70,7 +72,7 @@ char* getStringToken(string input,int* ptr, int lim2)
         count++;
         i++;
     }
-    char *a = new char[count];
+    char *a = new char[count+1];
     int k=0;
     while(j!=i)
     {
@@ -78,6 +80,7 @@ char* getStringToken(string input,int* ptr, int lim2)
         k++;
         j++;
     }
+    a[k]='\0';
     i++;
     while((input[i]==' ') && input[i]!='\0' && i<lim2)    //ignore white spaces
     {

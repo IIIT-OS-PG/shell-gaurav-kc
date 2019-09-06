@@ -3,16 +3,107 @@
 #include<sys/wait.h>
 #include<string.h>
 #include<errno.h>
-#include<stdio.h>
 #include<vector>
 #include<fcntl.h>
 #include "parser.h"
-#include "trie.h"
 #define ARGLIMIT 10
 using namespace std;
 char** parseString(string input,int lim1,int lim2);
 int executecommand(char** args);
 int executecommandwithoutfork(char** args);
+
+
+//class begins heree *********************
+char** his;
+int limit;
+int head;
+int tail;
+void sethistory(int lim){
+    his = new char*[lim+1];
+    limit = lim+1;
+    head=0;
+}
+void load_history()
+{
+    FILE *fp = fopen("history.txt","r");
+    cout<<fp;
+    char c;
+    int i=0;
+    int j=0;
+    int count = limit;
+    c=getc(fp);
+    cout<<"lelele   "<<c<<"    lelele"<<endl;
+    if(c==EOF)
+    {
+    	//file is empty
+    	head=0;
+    	tail=1;
+    	return;
+    }
+    while(c!=EOF && count--)
+    {
+        char* temp = new char[20];
+        j=0;
+        while(c!='\n' && c!=EOF)
+        {
+            temp[j]=c;
+            j++;
+            c=getc(fp);
+        }
+        temp[j]='\0';
+        his[i]=temp;
+        i++;
+        cout<<temp;
+        c=getc(fp);
+    }
+    tail=i;
+    cout<<tail;
+    fclose(fp);
+}
+void insertinhistory(string command)
+{
+    char *temp = new char[command.size()];
+    strcpy(temp,command.c_str());
+    his[tail] = temp;
+    tail=(tail+1)%limit;
+    if(tail == head)
+    {
+        free(his[head]);
+        head=(head+1)%limit;
+    }
+}
+string getRecent()
+{
+    string s = his[(tail-1+limit)%limit];
+    return s;
+}
+void reset()
+{
+
+}
+void savetohistory()
+{
+    FILE *fp = fopen("history.txt","w");
+    int j=0;
+    int i=head;
+    cout<<head<<tail;
+    while(i!=tail)
+    {
+        j=0;
+        if(his[i]!=NULL)
+        {
+            while(his[i][j]!='\0')
+            {
+                putc(his[i][j],fp);
+                j++;
+            }
+            putc('\n',fp);
+        }
+        i=(i+1)%limit;
+    }
+    fclose(fp);
+}
+
 
 int checkinbuilt(string command)
 {
@@ -80,12 +171,13 @@ void handlepipe(string input)
             count++;
             indices.push_back(i);
             l=0;
-            char *temp = new char[tempcount-2];
+            char *temp = new char[tempcount-1];
             for(int k=j;k<(i-1);k++)
             {
                 temp[l] = input[k];
                 l++;
             }
+            temp[l]='\0';
             token[m]=temp;
             m++;
             tempcount=0;
@@ -95,12 +187,13 @@ void handlepipe(string input)
     }
     indices.push_back(input.size());
     l=0;
-    char *temp = new char[tempcount-2];
+    char *temp = new char[tempcount-1];
     for(int k=j;k<(i-1);k++)
     {
         temp[l] = input[k];
         l++;
     }
+    temp[l]='\0';
     token[m]=temp;
     m++;
     token[m]=NULL;
@@ -296,6 +389,7 @@ int executecommand(char** args)
         }
         case 2 :    //exit
         {
+        	savetohistory();
             cout<<"Bye"<<endl;
             exit(0);
         }
@@ -338,116 +432,36 @@ int executecommandwithoutfork(char** args)
         }
         case 2 :    //exit
         {
+        	savetohistory();
             cout<<"Bye"<<endl;
             exit(0);
         }
     }
 }
 
-
-class history{
-    char** his;
-    int limit;
-    int head;
-    int tail;
-public:
-    history(int lim){
-        his = new char*[lim+1];
-        limit = lim+1;
-        head=0;
-    }
-    void load_history()
-    {
-        FILE *fp = fopen("history.txt","r");
-        char c;
-        int i=0;
-        int j=0;
-        int count = limit;
-        c=getc(fp);
-        while(c!=EOF && count--)
-        {
-            char* temp = new char[100];
-            j=0;
-            while(c!='\n' && c!=EOF)
-            {
-                temp[j]=c;
-                j++;
-                c=getc(fp);
-            }
-            temp[j]='\0';
-            his[i]=temp;
-            cout<<temp;
-            i++;
-            c=getc(fp);
-        }
-        tail=i;
-        cout<<tail;
-        fclose(fp);
-    }
-    void insertinhistory(string command)
-    {
-        char *temp = new char[command.size()];
-        strcpy(temp,command.c_str());
-        his[tail] = temp;
-        tail=(tail+1)%limit;
-        if(tail == head)
-        {
-            free(his[head]);
-            head=(head+1)%limit;
-        }
-    }
-    string getRecent()
-    {
-        string s = his[(tail-1+limit)%limit];
-        return s;
-    }
-    void reset()
-    {
-
-    }
-    void savetohistory()
-    {
-        FILE *fp = fopen("history.txt","w");
-        int j=0;
-        int i=head;
-        cout<<head<<tail;
-        while(i!=tail)
-        {
-            j=0;
-            if(his[i]!=NULL)
-            {
-                while(his[i][j]!='\0')
-                {
-                    putc(his[i][j],fp);
-                    j++;
-                }
-                putc('\n',fp);
-            }
-            i=(i+1)%limit;
-        }
-        fclose(fp);
-    }
-};
-
 int loop()
 {
     int status;
     string command;
     char** args;
-    history *his = new history(5);
-    his->load_history();
+	sethistory(10);
+    load_history();
     string ps1string = "> ";
     do{
-        cout<<his->getRecent()<<endl;
         cout<<ps1string;
         getline(cin,command);
+        insertinhistory(command);
         args=parseString(command,0,command.size());
+        /*int p=0;
+        while(args[p]!=NULL)
+        {
+            cout<<args[p]<<" "<<endl;
+            p++;
+        }*/
         if(args!=NULL)
             status=executecommand(args);
-        his->insertinhistory(command);
-        cout<<his->getRecent()<<endl;
+        cout<<getRecent();
     }while(1);
-    his->savetohistory();
 }
 
 int main()

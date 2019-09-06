@@ -1,5 +1,10 @@
-ii
-jj
 kk
 ll
 exit
+ls -al
+ls -al
+ls -al
+ls -al
+ls -al
+ls -al | grep gauravkc | grep Sep
+pwd
