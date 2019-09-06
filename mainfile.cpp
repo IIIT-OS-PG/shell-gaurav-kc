@@ -26,13 +26,11 @@ void sethistory(int lim){
 void load_history()
 {
     FILE *fp = fopen("history.txt","r");
-    cout<<fp;
     char c;
     int i=0;
     int j=0;
     int count = limit;
     c=getc(fp);
-    cout<<"lelele   "<<c<<"    lelele"<<endl;
     if(c==EOF)
     {
     	//file is empty
@@ -53,11 +51,9 @@ void load_history()
         temp[j]='\0';
         his[i]=temp;
         i++;
-        cout<<temp;
         c=getc(fp);
     }
     tail=i;
-    cout<<tail;
     fclose(fp);
 }
 void insertinhistory(string command)
@@ -86,7 +82,6 @@ void savetohistory()
     FILE *fp = fopen("history.txt","w");
     int j=0;
     int i=head;
-    cout<<head<<tail;
     while(i!=tail)
     {
         j=0;
@@ -460,7 +455,7 @@ int loop()
         }*/
         if(args!=NULL)
             status=executecommand(args);
-        cout<<getRecent();
+        //cout<<getRecent();
     }while(1);
 }
 

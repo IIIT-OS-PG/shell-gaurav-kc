@@ -1,10 +1,10 @@
-kk
-ll
 exit
+ls -al 
+exit
+exit
+ls 
 ls -al
+exit
+ls
 ls -al
-ls -al
-ls -al
-ls -al
-ls -al | grep gauravkc | grep Sep
-pwd
+exit
