@@ -5,13 +5,13 @@
 #include<errno.h>
 #include<vector>
 #include<fcntl.h>
+#include<fstream>
 #include "parser.h"
 #define ARGLIMIT 10
 using namespace std;
 char** parseString(string input,int lim1,int lim2);
 int executecommand(char** args);
 int executecommandwithoutfork(char** args);
-
 
 //class begins heree *********************
 char** his;
@@ -106,6 +106,12 @@ int checkinbuilt(string command)
         return 1;
     if(command == "exit")
         return 2;
+    if(command == "alias")
+        return 3;
+    if(command == "$$")
+        return 4;
+    if(command == "$?")
+        return 5;
     //handle custom command in executecommand and executecommandwithoutfork functions
     return 0;
 }
@@ -356,10 +362,18 @@ int executecommand(char** args)
             if(childid == 0)
             {
                 //I'm in child process
+                ofstream ofs;
+                ofs.open("status.txt");
+                ofs<<0;
+                ofs.close();
                 int status = execv(args[0],args);
                 if(status)
                 {
-                    cout<<strerror(errno)<<endl;
+                    cout<<strerror(errno)<<errno<<endl;
+                    ofstream ofs;
+                    ofs.open("status.txt");
+                    ofs<<errno;
+                    ofs.close();
                     exit(-1);
                 }
             }
@@ -388,6 +402,27 @@ int executecommand(char** args)
             cout<<"Bye"<<endl;
             exit(0);
         }
+        break;
+        case 3 :    //alias
+        {
+
+        }
+        break;
+        case 4 :    //$$
+        {
+            cout<<getpid()<<endl;
+            return 1;
+        }
+        break;
+        case 5 :    //$?
+        {
+            ifstream ifs;
+            ifs.open("status.txt");
+            int prev_status;
+            ifs>>prev_status;
+            cout<<prev_status<<endl;
+            return 1;
+        }
     }
 }
 
@@ -409,10 +444,18 @@ int executecommandwithoutfork(char** args)
     {
         case 0:     //linux command
         {
+            ofstream ofs;
+            ofs.open("status.txt");
+            ofs<<0;
+            ofs.close();
             int status = execv(args[0],args);
             if(status)
             {
-                cout<<strerror(errno)<<endl;
+                cout<<strerror(errno)<<errno<<endl;
+                ofstream ofs;
+                ofs.open("status.txt");
+                ofs<<errno;
+                ofs.close();
                 exit(-1);
             }
         }
@@ -430,6 +473,27 @@ int executecommandwithoutfork(char** args)
         	savetohistory();
             cout<<"Bye"<<endl;
             exit(0);
+        }
+        break;
+        case 3 :    //alias
+        {
+
+        }
+        break;
+        case 4 :    //$$
+        {
+            cout<<getpid()<<endl;
+            return 1;
+        }
+        break;
+        case 5 :    //$?
+        {
+            ifstream ifs;
+            ifs.open("status.txt");
+            int prev_status;
+            ifs>>prev_status;
+            cout<<prev_status<<endl;
+            return 1;
         }
     }
 }

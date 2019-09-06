@@ -1,10 +1,10 @@
-exit
-ls -al 
-exit
-exit
-ls 
-ls -al
-exit
+dasd
+$?
 ls
-ls -al
+$
+ls
+$?
+ls
+sdasd
+$?
 exit
