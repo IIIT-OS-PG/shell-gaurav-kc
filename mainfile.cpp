@@ -376,6 +376,7 @@ public:
             }
             temp[j]='\0';
             his[i]=temp;
+            cout<<temp;
             i++;
             c=getc(fp);
         }
@@ -397,7 +398,7 @@ public:
     }
     string getRecent()
     {
-        string s = his[tail-1];
+        string s = his[(tail-1+limit)%limit];
         return s;
     }
     void reset()
@@ -437,15 +438,15 @@ int loop()
     his->load_history();
     string ps1string = "> ";
     do{
-        //cout<<his->getRecent()<<endl;
+        cout<<his->getRecent()<<endl;
         cout<<ps1string;
         getline(cin,command);
-        /*args=parseString(command,0,command.size());
+        args=parseString(command,0,command.size());
         if(args!=NULL)
-            status=executecommand(args);*/
+            status=executecommand(args);
         his->insertinhistory(command);
-        //cout<<his->getRecent()<<endl;
-    }while(command!="exit");
+        cout<<his->getRecent()<<endl;
+    }while(1);
     his->savetohistory();
 }
 
