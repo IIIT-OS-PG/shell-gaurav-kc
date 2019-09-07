@@ -69,7 +69,39 @@ int executecommand(char** args)
         break;
         case 3 :    //alias
         {
-
+            int h=2;
+            string p;
+            p=args[1];
+            while(args[h]!=NULL)
+            {
+                p=p+" "+args[h];
+                h++;
+            }
+            h=0;
+            while(p[h]!=' ' && p[h]!='=')
+                h++;
+            int i=0;
+            char* aliasname = getToken(p,&i,h);
+            while(p[h]==' ' || p[h]=='=')
+                h++;
+            i=h;
+            int count=0;
+            while(p[h]!='\0')
+            {
+                count++;
+                h++;
+            }
+            char* aliascomm = new char[count+1];
+            int j=0;
+            while(count--)
+            {
+                aliascomm[j]=p[i];
+                j++;
+                i++;
+            }
+            aliascomm[j]='\0';
+            //cout<<"key "<<aliasname<<" val "<<aliascomm<<endl;
+            al[aliasname]=aliascomm;
         }
         break;
         case 4 :    //$$

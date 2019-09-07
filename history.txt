@@ -1,10 +1,10 @@
-$?
 exit
-ls
-ls -al
-ls -al | grep stat 
+alias ll = "ls -a"
 exit
-cat finally.txt
-ls -al | grep gauravkc | grep tri | grep trie.h >> finally.txt 
-cat finally.txt
+alias ll = "ls -a"
+ls -a
+ll -l
+alias xx = "ll"
+xx
+xx -l
 exit

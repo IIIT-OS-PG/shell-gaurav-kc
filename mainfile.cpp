@@ -1,12 +1,17 @@
+
 #include<iostream>
 #include<unistd.h>
 #include<sys/wait.h>
 #include<string.h>
 #include<errno.h>
+#include<unordered_map>
 #include<vector>
 #include<fcntl.h>
 #include<fstream>
-#include<map>
+
+using namespace std;
+
+unordered_map<string,string> al;
 #define ARGLIMIT 10
 #define HISTSIZE 10
 #include "prototypes.h"
@@ -17,7 +22,7 @@
 #include "commandexecution.h"
 #include "ioredirection.h"
 
-map<string,string> al;
+using namespace std;
 
 int checkinbuilt(string command)
 {
@@ -37,6 +42,44 @@ int checkinbuilt(string command)
 
 using namespace std;
 
+string checkAlias(string command)
+{
+    int i=0;
+    string commandname = getToken(command,&i,command.size());
+    auto it = al.find(commandname);
+    if(it!=al.end())
+    {
+        //alias exists
+        auto it2 = al.find(commandname);
+        while(it2!=al.end())
+        {
+            commandname = it2->second;
+            it2 = al.find(commandname);
+        }
+        //commandname is final command namespace
+        int j=0;
+        int count=0;
+        int k=i;
+        while(command[i]!='\0')
+        {
+            count++;
+            i++;
+        }
+        char* reststuff = new char[count+1];
+        while(count--)
+        {
+            reststuff[j]=command[k];
+            j++;
+            k++;
+        }
+        reststuff[j]='\0';
+        string newcommand = commandname+" "+reststuff;
+        return newcommand;
+    }else{
+        return command;
+    }
+}
+
 int loop()
 {
     int status;
@@ -49,6 +92,7 @@ int loop()
         cout<<ps1string;
         getline(cin,command);
         insertinhistory(command);
+        command = checkAlias(command);
         args=parseString(command,0,command.size());
         /*int p=0;
         while(args[p]!=NULL)
@@ -58,6 +102,7 @@ int loop()
         }*/
         if(args!=NULL)
             status=executecommand(args);
+        //cout<<al["ll"];
         //cout<<getRecent();
     }while(1);
 }
