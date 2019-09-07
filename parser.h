@@ -12,6 +12,21 @@ char** parseString(string input,int lim1,int lim2)
     {
         if(input[i]=='|')
         {
+            i++;
+            while(input[i]!='\0')
+            {
+                if(input[i]=='>')
+                {
+                    if(input[i+1]=='>')
+                    {
+                        handlepiperedirected(input,i,true);
+                    }else{
+                        handlepiperedirected(input,i,false);
+                    }
+                    return NULL;
+                }
+                i++;
+            }
             handlepipe(input);
             return NULL;
         }

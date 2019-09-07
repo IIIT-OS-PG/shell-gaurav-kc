@@ -1,10 +1,10 @@
-ls
-$?
-ls
-sdasd
 $?
 exit
 ls
 ls -al
 ls -al | grep stat 
+exit
+cat finally.txt
+ls -al | grep gauravkc | grep tri | grep trie.h >> finally.txt 
+cat finally.txt
 exit

@@ -16,3 +16,4 @@ char* getToken(string input,int* ptr,int lim2);
 char* getCommand(string input,int* ptr, int lim2);
 char* getStringToken(string input,int* ptr, int lim2);
 int checkinbuilt(string command);
+void handlepiperedirected(string input,int angleindex, bool isAppend);

@@ -12,6 +12,7 @@
 #include "prototypes.h"
 #include "historyhandler.h"
 #include "handlepipe.h"
+#include "handlepiperedirected.h"
 #include "parser.h"
 #include "commandexecution.h"
 #include "ioredirection.h"
