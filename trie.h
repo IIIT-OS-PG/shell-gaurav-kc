@@ -27,6 +27,7 @@ void insertinTrie(t *root, string val)
 	for (int i = 0; i < val.length(); i++)
 	{
 		char tp = val[i];
+		//cout<<tp;
 		if (temp->mp.find(tp) == temp->mp.end())
 		{
 			//temp->dq->removekey(tp);
@@ -84,6 +85,7 @@ string getSuggestion(t* root,string str)
         temp=temp->mp[temp->dq->back()];
         k++;
     }
+	result[k]='\0';
     return result;
 }
 /*int main()

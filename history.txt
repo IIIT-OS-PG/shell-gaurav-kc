@@ -1,10 +1,10 @@
 search ls
-search exit
-ls -al
+exit
+search ls -al
+exit
 search ls
-ls -al | grep gauravkc
+exit
 search ls
-ls -tt
-ls -a -l
+ls -al | grep gauravkc 
 search ls
 exit
