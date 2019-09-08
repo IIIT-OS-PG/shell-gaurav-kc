@@ -1,90 +1,108 @@
 // C++ implementation of search and insert
 // operations on Trie
+#include <iostream>
+#include <unordered_map>
+#include <vector>
 using namespace std;
+#include "mydeque.h"
 
-const int ALPHABET_SIZE = 26;
-
-// trie node
-struct TrieNode
-{
-	struct TrieNode *children[ALPHABET_SIZE];
-
-	// isEndOfWord is true if the node represents
-	// end of a word
-	bool isEndOfWord;
+class t{
+public:
+	deque<char> *dq = new deque<char>(10);
+	unordered_map<char,t*> mp;
+	bool isEnd;
+	t(){
+	}
 };
 
-// Returns new trie node (initialized to NULLs)
-struct TrieNode *getNode(void)
+t* createNode(void)
 {
-	struct TrieNode *pNode = new TrieNode;
-
-	pNode->isEndOfWord = false;
-
-	for (int i = 0; i < ALPHABET_SIZE; i++)
-		pNode->children[i] = NULL;
-
-	return pNode;
+	t *temp = new t();
+	temp->isEnd = false;
+	return temp;
 }
 
-// If not present, inserts key into trie
-// If the key is prefix of trie node, just
-// marks leaf node
-void insert(struct TrieNode *root, string key)
+void insert(t *root, string val)
 {
-	struct TrieNode *pCrawl = root;
-
-	for (int i = 0; i < key.length(); i++)
+	t *temp = root;
+	t *temp2;
+	for (int i = 0; i < val.length(); i++)
 	{
-		int index = key[i] - 'a';
-		if (!pCrawl->children[index])
-			pCrawl->children[index] = getNode();
-
-		pCrawl = pCrawl->children[index];
+		char tp = val[i];
+		if (temp->mp.find(tp) == temp->mp.end())
+		{
+			//temp->dq->removekey(tp);
+			temp->dq->push_back(tp);
+			temp2 = createNode();
+			temp->mp.insert({tp,temp2});
+		}else{
+            temp->dq->removekey(tp);
+            temp->dq->push_back(tp);
+		}
+		auto it = temp->mp.find(tp);
+		if(it==temp->mp.end())
+            cout<<"lol. didnt find"<<endl;
+		temp = (*it).second;
 	}
-
-	// mark last node as leaf
-	pCrawl->isEndOfWord = true;
+	temp->isEnd = true;
 }
 
-// Returns true if key presents in trie, else
-// false
-bool search(struct TrieNode *root, string key)
+t* constructTrie(vector<string> v)
 {
-	struct TrieNode *pCrawl = root;
-
-	for (int i = 0; i < key.length(); i++)
+	t* root = createNode();
+	auto it = v.begin();
+	while(it!=v.end())
 	{
-		int index = key[i] - 'a';
-		if (!pCrawl->children[index])
-			return false;
-
-		pCrawl = pCrawl->children[index];
+		insert(root,*it);
+		it++;
 	}
-
-	return (pCrawl != NULL && pCrawl->isEndOfWord);
+	return root;
 }
 
+string getSuggestion(t* root,string str)
+{
+    int k=0;
+    char* result = new char[100];
+    t* temp=root;
+    for(int i=0;i<str.size();i++)
+    {
+        //cout<<str[i];
+        if(temp->mp.find(str[i])==temp->mp.end())
+        {
+            //doesnt exist. return
+            return "Doesn't Exist";
+        }else{
+            result[k]=str[i];
+            temp=temp->mp[str[i]];
+            k++;
+        }
+    }
+    //cout<<temp->dq->back();
+    //return "lel";
+
+    while(temp->isEnd != true)
+    {
+        result[k] = temp->dq->back();
+        temp=temp->mp[temp->dq->back()];
+        k++;
+    }
+    return result;
+}
 // Driver
 /*int main()
 {
-	// Input keys (use only 'a' through 'z'
-	// and lower case)
-	string keys[] = {"the", "a", "there",
-					"answer", "any", "by",
-					"bye", "their" };
-	int n = sizeof(keys)/sizeof(keys[0]);
-
-	struct TrieNode *root = getNode();
-
-	// Construct trie
-	for (int i = 0; i < n; i++)
-		insert(root, keys[i]);
-
-	// Search for different keys
-	search(root, "the")? cout << "Yes\n" :
-						cout << "No\n";
-	search(root, "these")? cout << "Yes\n" :
-						cout << "No\n";
+    t* root;
+	vector<string> v;
+	v.push_back("Gauravk");
+	v.push_back("Gaurav");
+	v.push_back("Gauravi");
+	v.push_back("Gauri");
+	v.push_back("Gaurang");
+	v.push_back("Gauresh");
+	v.push_back("Gourav");
+	v.push_back("Gauresh");
+	root = constructTrie(v);
+    cout<<getSuggestion(root,"Gou");
 	return 0;
-}*/
+}
+*/

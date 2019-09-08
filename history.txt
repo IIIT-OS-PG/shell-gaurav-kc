@@ -1,10 +1,10 @@
 exit
 alias ll = "ls -a"
-exit
-alias ll = "ls -a"
 ls -a
 ll -l
 alias xx = "ll"
 xx
 xx -l
+exit
+ls -al | grep gauravkc | grep main | grep mainfile 
 exit

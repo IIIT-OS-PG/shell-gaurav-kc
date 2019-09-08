@@ -12,6 +12,7 @@
 using namespace std;
 
 unordered_map<string,string> al;
+vector<string> v;
 #define ARGLIMIT 10
 #define HISTSIZE 10
 #include "prototypes.h"
@@ -102,7 +103,6 @@ int loop()
         }*/
         if(args!=NULL)
             status=executecommand(args);
-        //cout<<al["ll"];
         //cout<<getRecent();
     }while(1);
 }

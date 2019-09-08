@@ -5,6 +5,7 @@ char** his;
 int limit;
 int head;
 int tail;
+t* root;
 void sethistory(int lim)
 {
     his = new char*[lim+1];
@@ -38,6 +39,7 @@ void load_history()
         }
         temp[j]='\0';
         his[i]=temp;
+        v.push_back(temp);
         i++;
         c=getc(fp);
     }
