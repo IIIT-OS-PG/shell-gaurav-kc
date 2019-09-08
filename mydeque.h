@@ -221,6 +221,20 @@ int find(T key)
     }
     return INVALID;
 }
+
+T* find(T key)
+{
+    T* arr = new T[validSize()+1];
+    int l=0;
+    for(int i=fronti;i!=reari;i=(i+1+qsize)%qsize)
+    {
+        arr[l]=ptr[i];
+        l++;
+    }
+    arr[l]='\0';
+    return arr;
+}
+
 int validSize()
 {
     return (reari-fronti+qsize)%qsize;

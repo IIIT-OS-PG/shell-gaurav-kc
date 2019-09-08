@@ -7,3 +7,4 @@ echo "123"
 ls
 search ec
 exit
+exit
