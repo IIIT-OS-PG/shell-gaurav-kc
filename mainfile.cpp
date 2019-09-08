@@ -15,7 +15,9 @@ unordered_map<string,string> al;
 vector<string> v;
 #define ARGLIMIT 10
 #define HISTSIZE 10
+#include "mydeque.h"
 #include "prototypes.h"
+#include "trie.h"
 #include "historyhandler.h"
 #include "handlepipe.h"
 #include "handlepiperedirected.h"
@@ -37,6 +39,8 @@ int checkinbuilt(string command)
         return 4;
     if(command == "$?")
         return 5;
+    if(command == "search")
+        return 6;
     //handle custom command in executecommand and executecommandwithoutfork functions
     return 0;
 }

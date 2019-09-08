@@ -1,10 +1,10 @@
-exit
-alias ll = "ls -a"
-ls -a
-ll -l
-alias xx = "ll"
-xx
-xx -l
-exit
-ls -al | grep gauravkc | grep main | grep mainfile 
+search ls
+search exit
+ls -al
+search ls
+ls -al | grep gauravkc
+search ls
+ls -tt
+ls -a -l
+search ls
 exit

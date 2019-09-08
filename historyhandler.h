@@ -43,6 +43,7 @@ void load_history()
         i++;
         c=getc(fp);
     }
+    root = constructTrie(v);
     tail=i;
     fclose(fp);
 }
@@ -50,6 +51,7 @@ void insertinhistory(string command)
 {
     char *temp = new char[command.size()];
     strcpy(temp,command.c_str());
+    insertinTrie(root,command);
     his[tail] = temp;
     tail=(tail+1)%limit;
     if(tail == head)
@@ -62,6 +64,11 @@ string getRecent()
 {
     string s = his[(tail-1+limit)%limit];
     return s;
+}
+
+string getRecentStr(string str)
+{
+    return getSuggestion(root,str);
 }
 void reset()
 {

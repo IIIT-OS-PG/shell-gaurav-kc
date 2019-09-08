@@ -1,5 +1,13 @@
 using namespace std;
 
+class t{
+public:
+	deque<char> *dq = new deque<char>(10);
+	unordered_map<char,t*> mp;
+	bool isEnd;
+	t(){
+	}
+};
 int executecommand(char** args);
 int executecommandwithoutfork(char** args);
 void handlepipe(string input);
@@ -17,3 +25,7 @@ char* getCommand(string input,int* ptr, int lim2);
 char* getStringToken(string input,int* ptr, int lim2);
 int checkinbuilt(string command);
 void handlepiperedirected(string input,int angleindex, bool isAppend);
+t* createNode();
+void insertinTrie(t *root, string val);
+t* constructTrie(vector<string> v);
+string getSuggestion(t* root,string str);

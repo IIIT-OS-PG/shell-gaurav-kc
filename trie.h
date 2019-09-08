@@ -1,28 +1,26 @@
-// C++ implementation of search and insert
-// operations on Trie
-#include <iostream>
+/*#include <iostream>
 #include <unordered_map>
-#include <vector>
+#include <vector>*/
 using namespace std;
-#include "mydeque.h"
+// #include "mydeque.h"
 
-class t{
-public:
-	deque<char> *dq = new deque<char>(10);
-	unordered_map<char,t*> mp;
-	bool isEnd;
-	t(){
-	}
-};
+// class t{
+// public:
+// 	deque<char> *dq = new deque<char>(10);
+// 	unordered_map<char,t*> mp;
+// 	bool isEnd;
+// 	t(){
+// 	}
+// };
 
-t* createNode(void)
+t* createNode()
 {
 	t *temp = new t();
 	temp->isEnd = false;
 	return temp;
 }
 
-void insert(t *root, string val)
+void insertinTrie(t *root, string val)
 {
 	t *temp = root;
 	t *temp2;
@@ -53,7 +51,7 @@ t* constructTrie(vector<string> v)
 	auto it = v.begin();
 	while(it!=v.end())
 	{
-		insert(root,*it);
+		insertinTrie(root,*it);
 		it++;
 	}
 	return root;
@@ -88,7 +86,6 @@ string getSuggestion(t* root,string str)
     }
     return result;
 }
-// Driver
 /*int main()
 {
     t* root;

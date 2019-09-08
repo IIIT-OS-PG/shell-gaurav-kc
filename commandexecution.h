@@ -119,6 +119,13 @@ int executecommand(char** args)
             cout<<prev_status<<endl;
             return 1;
         }
+        break;
+        case 6 :
+        {
+            cout<<getRecentStr(args[1]);
+            return 1;
+        }
+        break;
     }
 }
 
@@ -191,5 +198,11 @@ int executecommandwithoutfork(char** args)
             cout<<prev_status<<endl;
             return 1;
         }
+        case 6 :
+        {
+            cout<<getRecentStr(args[1]);
+            return 1;
+        }
+        break;
     }
 }
