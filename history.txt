@@ -1,10 +1,9 @@
-search ls
 exit
-search ls -al
-exit
-search ls
-exit
-search ls
+ls
+ls -al
 ls -al | grep gauravkc 
 search ls
+echo "123"
+ls
+search ec
 exit

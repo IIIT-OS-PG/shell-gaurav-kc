@@ -122,7 +122,15 @@ int executecommand(char** args)
         break;
         case 6 :
         {
-            cout<<getRecentStr(args[1]);
+            string p;
+            int h=2;
+            p=args[1];
+            while(args[h]!=NULL)
+            {
+                p=p+" "+args[h];
+                h++;
+            }
+            cout<<getRecentStr(p)<<endl;
             return 1;
         }
         break;
@@ -198,9 +206,19 @@ int executecommandwithoutfork(char** args)
             cout<<prev_status<<endl;
             return 1;
         }
+        break;
+
         case 6 :
         {
-            cout<<getRecentStr(args[1]);
+            string p;
+            int h=2;
+            p=args[1];
+            while(args[h]!=NULL)
+            {
+                p=p+" "+args[h];
+                h++;
+            }
+            cout<<getRecentStr(p)<<endl;
             return 1;
         }
         break;
