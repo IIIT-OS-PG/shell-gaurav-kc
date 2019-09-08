@@ -41,7 +41,7 @@ void insertinTrie(t *root, string val)
 		auto it = temp->mp.find(tp);
 		//if(it==temp->mp.end())
         //    cout<<"lol. didnt find"<<endl;
-		temp->isEnd = false;
+		//temp->isEnd = false;
 		temp = (*it).second;
 	}
 	temp->isEnd = true;
@@ -66,7 +66,7 @@ string getSuggestion(t* root,string str)
     t* temp=root;
     for(int i=0;i<str.size();i++)
     {
-        cout<<str[i];
+        //cout<<str[i];
         if(temp->mp.find(str[i])==temp->mp.end())
         {
             //doesnt exist. return
@@ -80,7 +80,7 @@ string getSuggestion(t* root,string str)
     //cout<<temp->dq->back();
     //return "lel";
 
-    while(temp->isEnd != true)
+    while(!(temp->dq->empty()))
     {
         result[k] = temp->dq->back();
         temp=temp->mp[temp->dq->back()];

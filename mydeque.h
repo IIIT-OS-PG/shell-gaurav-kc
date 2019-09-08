@@ -222,7 +222,7 @@ int find(T key)
     return INVALID;
 }
 
-T* find(T key)
+T* getArray(T key)
 {
     T* arr = new T[validSize()+1];
     int l=0;
