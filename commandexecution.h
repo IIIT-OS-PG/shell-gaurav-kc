@@ -1,6 +1,5 @@
 using namespace std;
 
-
 int executecommand(char** args)
 {
     int isinbuilt = checkinbuilt(args[0]+5);
@@ -134,6 +133,45 @@ int executecommand(char** args)
             return 1;
         }
         break;
+        case 7 :
+        {
+            //abc.txt
+            // int p=0;
+            // while(args[p]!=NULL)
+            // {
+            //     cout<<args[p]<<" "<<endl;
+            //     p++;
+            // }
+            string s = args[1];
+            int i=0;
+            while(s[i]!='.')
+                i++;
+            i++;
+            string format="";
+            while(s[i]!='\0')
+            {
+                format=format+s[i];
+                i++;
+            }
+            //cout<<format;
+            auto it = def.find(format);
+            if(it!=def.end())
+            {
+                string path1 = it->second;
+                char* path1arr = new char[path1.size()+1];
+                strcpy(path1arr,path1.c_str());
+                args[0]=path1arr;
+                args[2]=NULL;
+                pid_t tempid = fork();
+                if(tempid==0)
+                {
+                    execv(args[0],args);
+                }else{
+                    while(wait(NULL)>0);
+                }
+            }
+            return 1;
+        }
     }
 }
 
@@ -223,4 +261,28 @@ int executecommandwithoutfork(char** args)
         }
         break;
     }
+}
+
+
+void set_def()
+{
+    def["txt"] = "/usr/bin/gedit";
+    def["odt"] = "/usr/bin/libreoffice";
+    def["ott"] = "/usr/bin/libreoffice";
+    def["odm"] = "/usr/bin/libreoffice";
+    def["html"] = "/usr/bin/firefox";
+    def["oth"] = "/usr/bin/libreoffice";
+    def["ods"] = "/usr/bin/libreoffice";
+    def["ots"] = "/usr/bin/libreoffice";
+    def["odg"] = "/usr/bin/libreoffice";
+    def["otg"] = "/usr/bin/libreoffice";
+    def["odp"] = "/usr/bin/libreoffice";
+    def["otp"] = "/usr/bin/libreoffice";
+    def["odf"] = "/usr/bin/libreoffice";
+    def["odb"] = "/usr/bin/libreoffice";
+    def["oxt"] = "/usr/bin/libreoffice";
+    def["mp4"] = "/usr/bin/vlc";
+    def["jpg"] = "/usr/bin/eog";
+    def["jpeg"] = "/usr/bin/eog";
+    def["png"] = "/usr/bin/eog";
 }

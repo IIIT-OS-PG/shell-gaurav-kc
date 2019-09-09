@@ -1,8 +1,10 @@
+open status.txt
 exit
-ls
-ls -al
-ls -al | grep gauravkc
+open status.txt
 exit
-search ls
-ls
+open status.txt
+exit
+open status.txt
+exit
+open status.txt
 exit

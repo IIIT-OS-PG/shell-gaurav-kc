@@ -2,7 +2,7 @@
 #define INVALID -1
 // DEQUE Implementation.
 using namespace std;
-
+namespace gaurav{
 template <class T>
 class deque{
     int qsize;
@@ -222,7 +222,7 @@ int find(T key)
     return INVALID;
 }
 
-T* getArray(T key)
+T* getArray()
 {
     T* arr = new T[validSize()+1];
     int l=0;
@@ -240,3 +240,4 @@ int validSize()
     return (reari-fronti+qsize)%qsize;
 }
 };
+}

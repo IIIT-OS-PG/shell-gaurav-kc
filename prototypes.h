@@ -2,7 +2,7 @@ using namespace std;
 
 class t{
 public:
-	deque<char> *dq = new deque<char>(10);
+	gaurav::deque<char> *dq = new gaurav::deque<char>(10);
 	unordered_map<char,t*> mp;
 	bool isEnd;
 	t(){
@@ -29,3 +29,4 @@ t* createNode();
 void insertinTrie(t *root, string val);
 t* constructTrie(vector<string> v);
 string getSuggestion(t* root,string str);
+void set_def();

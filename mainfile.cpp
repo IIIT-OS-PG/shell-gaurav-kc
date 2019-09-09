@@ -12,6 +12,7 @@
 using namespace std;
 
 unordered_map<string,string> al;
+unordered_map<string,string> def;
 vector<string> v;
 #define ARGLIMIT 10
 #define HISTSIZE 10
@@ -41,6 +42,8 @@ int checkinbuilt(string command)
         return 5;
     if(command == "search")
         return 6;
+    if(command == "open")
+        return 7;
     //handle custom command in executecommand and executecommandwithoutfork functions
     return 0;
 }
@@ -92,6 +95,7 @@ int loop()
     char** args;
 	sethistory(HISTSIZE);
     load_history();
+    set_def();
     string ps1string = "> ";
     do{
         cout<<ps1string;
