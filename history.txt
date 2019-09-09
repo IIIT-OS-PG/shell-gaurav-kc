@@ -1,10 +1,10 @@
+complete grep
+complete g
+complete l
+search ls
+search ll
 exit
-complete ls
-exit
-alias ll = "ls -l"
-ll
-exit
-ls --color=auto
-exit
-ls
+search ls
+search ll
+complete pplpl
 exit
