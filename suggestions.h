@@ -1,8 +1,9 @@
-#include <iostream>
+/*#include <iostream>
 #include <unordered_map>
 #include <vector>
 #include <stack>
 #include <string>
+#include<dirent.h>
 #include "mydeque.h"
 using namespace std;
 //using namespace gaurav;
@@ -15,10 +16,31 @@ public:
 	t(){
 	}
 };
+*/
 
-char* createCopy(char* arr,int size)
+void getFileLists(string path,vector<string> &files)
 {
-	cout<<"I got "<<arr<<endl;
+	DIR *dir;
+	struct dirent *ent;
+	string temp;
+	if ((dir = opendir(path.c_str())) != NULL)
+	{
+		while((ent = readdir (dir)) != NULL) {
+			temp = ent->d_name;
+			if(temp[0]=='.')
+				continue;
+	    	files.push_back(ent->d_name);
+	  	}
+	 	closedir (dir);
+	}else
+	{
+		cout<<"Error opening directory";
+	}
+}
+
+char* createCopys(char* arr,int size)
+{
+	//cout<<"I got "<<arr<<endl;
 	char* temp = new char[size+1];
 	int i;
 	for(i=0;i<size;i++)
@@ -29,14 +51,14 @@ char* createCopy(char* arr,int size)
 	return temp;
 }
 
-t* createNode()
+t* createNodes()
 {
 	t *temp = new t();
 	temp->isEnd = false;
 	return temp;
 }
 
-void insertinTrie(t *root, string val)
+void insertinTries(t *root, string val)
 {
 	t *temp = root;
 	t *temp2;
@@ -48,7 +70,7 @@ void insertinTrie(t *root, string val)
 		{
 			//temp->dq->removekey(tp);
 			temp->dq->push_back(tp);
-			temp2 = createNode();
+			temp2 = createNodes();
 			temp->mp.insert({tp,temp2});
 		}else{
             temp->dq->removekey(tp);
@@ -59,41 +81,41 @@ void insertinTrie(t *root, string val)
         //    cout<<"lol. didnt find"<<endl;
 		//temp->isEnd = false;
 		char* lol = temp->dq->getArray();
-		int j =0;
+		/*int j =0;
 		while(lol[j]!='\0')
 		{
 			cout<<lol[j]<<" ";
 			j++;
 		}
 		cout<<" isend is "<<temp->isEnd;
-		cout<<endl;
+		cout<<endl;*/
 		temp = (*it).second;
 	}
 	char* lol = temp->dq->getArray();
-	int j =0;
-	cout<<"out "<<" ";	
+	/*int j =0;
+	cout<<"out "<<" ";
 	while(lol[j]!='\0')
 	{
 		cout<<lol[j]<<" ";
 		j++;
 	}
 	cout<<" isend is "<<temp->isEnd;
-	cout<<endl;
+	cout<<endl;*/
 	temp->isEnd = true;
 }
 
-t* constructTrie(vector<string> v)
+t* constructTries(vector<string> v)
 {
-	t* root = createNode();
+	t* root = createNodes();
 	auto it = v.begin();
 	while(it!=v.end())
 	{
-		insertinTrie(root,*it);
+		insertinTries(root,*it);
 		it++;
 	}
 	return root;
 }
-
+/*
 string getSuggestion(t* root,string str)
 {
     int k=0;
@@ -123,7 +145,7 @@ string getSuggestion(t* root,string str)
     }
 	result[k]='\0';
     return result;
-}
+}*/
 
 char** getAllStrings(t* node, string str)
 {
@@ -162,13 +184,13 @@ char** getAllStrings(t* node, string str)
 		char * t7 = p.second->dq->getArray();
 		i=0;
 		c = noofchildren.top();
-		cout<<".. "<<c.first<<" .. "<<c.second<<" ; ";
+		/*cout<<".. "<<c.first<<" .. "<<c.second<<" ; ";
 		while(t7[i]!='\0')
 		{
 			cout<<t7[i]<<" ";
 			i++;
 		};
-		cout<<endl;
+		cout<<endl;*/
 		if(c.second == 0)
 		{
 			nodes.pop();
@@ -182,14 +204,14 @@ char** getAllStrings(t* node, string str)
 			bool isitend = p.second->isEnd;
 			if(isitend)
 			{
-				char* t2 = createCopy(temp,temp_index);
+				char* t2 = createCopys(temp,temp_index);
 				result[result_index]=t2;
 				result_index++;
 				i=0;
 				char *t8=p.second->dq->getArray();
 				while(t8[i]!='\0')
 					i++;
-				cout<<",lll"<<i<<" lll,";
+				//cout<<",lll"<<i<<" lll,";
 				noofchildren.pop();
 				int newsize = c.second - 1;
 				noofchildren.push({c.first,newsize});
@@ -234,11 +256,11 @@ char** getAllStrings(t* node, string str)
 	result[result_index]=NULL;
 	return result;
 }
-
+/*
 int main()
 {
     t* root;
-	vector<string> v;
+	/*vector<string> v;
 	v.push_back("Gauravk");
 	v.push_back("Gaurav");
 	v.push_back("Gauravi");
@@ -247,9 +269,21 @@ int main()
 	v.push_back("Gauresh");
 	v.push_back("Gourav");
 	//v.push_back("Gauresh");
+	vector<string> v;
+	getFileLists("/home/gauravkc/bin",v);
+	getFileLists("/usr/local/sbin",v);
+	getFileLists("/usr/local/bin",v);
+	getFileLists("/usr/sbin",v);
+	getFileLists("/sbin",v);
+	getFileLists("/bin",v);
+	getFileLists("/usr/games",v);
+	getFileLists("/usr/local/games",v);
+	getFileLists("/snap/bin",v);
 	root = constructTrie(v);
     //cout<<getSuggestion(root,"Gou");
-	char** lel = getAllStrings(root,"Gau");
+	string input;
+	getline(cin,input);
+	char** lel = getAllStrings(root,input);
 	int i=0;
 	while(lel[i]!=NULL)
 	{
@@ -258,3 +292,4 @@ int main()
 	}
 	return 0;
 }
+*/

@@ -172,6 +172,31 @@ int executecommand(char** args)
             }
             return 1;
         }
+        break;
+        case 8 :
+        {
+            t* root;
+            vector<string> v;
+        	getFileLists("/home/gauravkc/bin",v);
+        	getFileLists("/usr/local/sbin",v);
+        	getFileLists("/usr/local/bin",v);
+        	getFileLists("/usr/sbin",v);
+        	getFileLists("/sbin",v);
+        	getFileLists("/bin",v);
+        	getFileLists("/usr/games",v);
+        	getFileLists("/usr/local/games",v);
+        	getFileLists("/snap/bin",v);
+        	root = constructTries(v);
+            char** lel = getAllStrings(root,args[1]);
+        	int i=0;
+        	while(lel[i]!=NULL)
+        	{
+        		cout<<lel[i]<<"\t";
+        		i++;
+        	}
+            cout<<endl;
+            return 1;
+        }
     }
 }
 
@@ -260,6 +285,70 @@ int executecommandwithoutfork(char** args)
             return 1;
         }
         break;
+        case 7 :
+        {
+            //abc.txt
+            // int p=0;
+            // while(args[p]!=NULL)
+            // {
+            //     cout<<args[p]<<" "<<endl;
+            //     p++;
+            // }
+            string s = args[1];
+            int i=0;
+            while(s[i]!='.')
+                i++;
+            i++;
+            string format="";
+            while(s[i]!='\0')
+            {
+                format=format+s[i];
+                i++;
+            }
+            //cout<<format;
+            auto it = def.find(format);
+            if(it!=def.end())
+            {
+                string path1 = it->second;
+                char* path1arr = new char[path1.size()+1];
+                strcpy(path1arr,path1.c_str());
+                args[0]=path1arr;
+                args[2]=NULL;
+                pid_t tempid = fork();
+                if(tempid==0)
+                {
+                    execv(args[0],args);
+                }else{
+                    while(wait(NULL)>0);
+                }
+            }
+            return 1;
+        }
+        break;
+        case 8 :
+        {
+            t* root;
+            vector<string> v;
+        	getFileLists("/home/gauravkc/bin",v);
+        	getFileLists("/usr/local/sbin",v);
+        	getFileLists("/usr/local/bin",v);
+        	getFileLists("/usr/sbin",v);
+        	getFileLists("/sbin",v);
+        	getFileLists("/bin",v);
+        	getFileLists("/usr/games",v);
+        	getFileLists("/usr/local/games",v);
+        	getFileLists("/snap/bin",v);
+        	root = constructTries(v);
+            char** lel = getAllStrings(root,args[1]);
+        	int i=0;
+        	while(lel[i]!=NULL)
+        	{
+        		cout<<lel[i]<<"\t";
+        		i++;
+        	}
+            return 1;
+        }
+        cout<<endl;
     }
 }
 

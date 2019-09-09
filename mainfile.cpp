@@ -3,6 +3,8 @@
 #include<unistd.h>
 #include<sys/wait.h>
 #include<string.h>
+#include<dirent.h>
+#include<stack>
 #include<errno.h>
 #include<unordered_map>
 #include<vector>
@@ -25,7 +27,7 @@ vector<string> v;
 #include "parser.h"
 #include "commandexecution.h"
 #include "ioredirection.h"
-
+#include "suggestions.h"
 using namespace std;
 
 int checkinbuilt(string command)
@@ -44,6 +46,8 @@ int checkinbuilt(string command)
         return 6;
     if(command == "open")
         return 7;
+    if(command == "complete")
+        return 8;
     //handle custom command in executecommand and executecommandwithoutfork functions
     return 0;
 }

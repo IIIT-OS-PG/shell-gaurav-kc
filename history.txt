@@ -1,10 +1,10 @@
-open status.txt
 exit
 open status.txt
 exit
-open status.txt
+ls
+ls -al
+search ls
+complete ls
 exit
-open status.txt
-exit
-open status.txt
+complete ls
 exit
