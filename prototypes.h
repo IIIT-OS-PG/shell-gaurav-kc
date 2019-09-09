@@ -36,3 +36,4 @@ char* createCopys(char* arr,int size);
 t* createNodes();
 void insertinTries(t *root, string val);
 char** getAllStrings(t* node, string str);
+void set_alias();

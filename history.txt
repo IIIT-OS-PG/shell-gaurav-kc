@@ -1,10 +1,10 @@
 exit
-open status.txt
+complete ls
+exit
+alias ll = "ls -l"
+ll
+exit
+ls --color=auto
 exit
 ls
-ls -al
-search ls
-complete ls
-exit
-complete ls
 exit

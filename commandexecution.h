@@ -161,11 +161,34 @@ int executecommand(char** args)
                 char* path1arr = new char[path1.size()+1];
                 strcpy(path1arr,path1.c_str());
                 args[0]=path1arr;
+                char* open = new char[4];
+                open[0]='o';
+                open[1]='p';
+                open[2]='e';
+                open[3]='n';
+                strcpy(path1arr,path1.c_str());
+                args[0]=path1arr;
+                if(format=="pdf")
+                {
+                    args[2]=args[1];
+                    args[1]=open;
+                    args[3]=NULL;
+                }else{
                 args[2]=NULL;
+                }
                 pid_t tempid = fork();
                 if(tempid==0)
                 {
-                    execv(args[0],args);
+                    int status = execv(args[0],args);
+                    if(status)
+                    {
+                        cout<<strerror(errno)<<errno<<endl;
+                        ofstream ofs;
+                        ofs.open("status.txt");
+                        ofs<<errno;
+                        ofs.close();
+                        exit(-1);
+                    }
                 }else{
                     while(wait(NULL)>0);
                 }
@@ -251,7 +274,39 @@ int executecommandwithoutfork(char** args)
         break;
         case 3 :    //alias
         {
-
+                int h=2;
+                string p;
+                p=args[1];
+                while(args[h]!=NULL)
+                {
+                    p=p+" "+args[h];
+                    h++;
+                }
+                h=0;
+                while(p[h]!=' ' && p[h]!='=')
+                    h++;
+                int i=0;
+                char* aliasname = getToken(p,&i,h);
+                while(p[h]==' ' || p[h]=='=')
+                    h++;
+                i=h;
+                int count=0;
+                while(p[h]!='\0')
+                {
+                    count++;
+                    h++;
+                }
+                char* aliascomm = new char[count+1];
+                int j=0;
+                while(count--)
+                {
+                    aliascomm[j]=p[i];
+                    j++;
+                    i++;
+                }
+                aliascomm[j]='\0';
+                //cout<<"key "<<aliasname<<" val "<<aliascomm<<endl;
+                al[aliasname]=aliascomm;
         }
         break;
         case 4 :    //$$
@@ -311,13 +366,34 @@ int executecommandwithoutfork(char** args)
             {
                 string path1 = it->second;
                 char* path1arr = new char[path1.size()+1];
+                char* open = new char[4];
+                open[0]='o';
+                open[1]='p';
+                open[2]='e';
+                open[3]='n';
                 strcpy(path1arr,path1.c_str());
                 args[0]=path1arr;
+                if(format=="pdf")
+                {
+                    args[2]=args[1];
+                    args[1]=open;
+                    args[3]=NULL;
+                }else{
                 args[2]=NULL;
+                }
                 pid_t tempid = fork();
                 if(tempid==0)
                 {
-                    execv(args[0],args);
+                    int status = execv(args[0],args);
+                    if(status)
+                    {
+                        cout<<strerror(errno)<<errno<<endl;
+                        ofstream ofs;
+                        ofs.open("status.txt");
+                        ofs<<errno;
+                        ofs.close();
+                        exit(-1);
+                    }
                 }else{
                     while(wait(NULL)>0);
                 }
@@ -374,4 +450,15 @@ void set_def()
     def["jpg"] = "/usr/bin/eog";
     def["jpeg"] = "/usr/bin/eog";
     def["png"] = "/usr/bin/eog";
+    def["pdf"] = "/usr/bin/gio";
+}
+
+
+void set_alias()
+{
+    string command = "alias ls = \"ls --color=auto";
+    char **args;
+    args=parseString(command,0,command.size());
+    if(args!=NULL)
+        executecommand(args);
 }

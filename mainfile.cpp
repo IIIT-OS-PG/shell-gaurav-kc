@@ -100,6 +100,7 @@ int loop()
 	sethistory(HISTSIZE);
     load_history();
     set_def();
+    set_alias();
     string ps1string = "> ";
     do{
         cout<<ps1string;
